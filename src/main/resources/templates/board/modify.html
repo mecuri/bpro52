@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+	<th:block th:fragment="content">
+		<h2 class="mt-4">게시글 수정</h2>
+		<form th:action="@{/board/modify}" th:method="post">
+		  <input type="hidden" name="page" th:value="${requestDTO.page}">
+		  <input type="hidden" name="type" th:value="${requestDTO.type}">
+		  <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+		<div class="form-group">
+			<label>번호</label> <input type="text" class="form-control" name="bno"
+				th:value="${dto.bno}" readonly> 
+			<label>제목</label> <input
+				type="text" class="form-control" name="title" th:value="${dto.title}"> 
+			<label>작성자</label> <input
+				type="text" class="form-control" name="writer" th:value="${dto.writerEmail}" readonly> 
+			<label>내용</label>
+			<textarea class="form-control" name="content" rows="10">[[${dto.content}]]</textarea>
+			<label>작성일자</label> <input type="text" class="form-control"
+				th:value="${#temporals.format(dto.regDate, 'yyyy년 MM월 dd일 hh:mm:ss')}" readonly>
+			<label>수정일자</label> <input type="text" class="form-control"
+				th:value="${#temporals.format(dto.updateDate, 'yyyy년 MM월 dd일 hh:mm:ss')}"
+				readonly>
+
+		</div>
+		<button type="button" class="btn btn-primary modifyBtn">수정</button>
+		<a th:href="@{/board/list(page=${requestDTO.page},
+										type=${requestDTO.type},
+								  		keyword=${requestDTO.keyword}
+		)}"><button type="button" class="btn btn-info">목록</button></a>
+	<!-- 	<button type="button" class="btn btn-info listBtn">목록</button> -->
+		<button type="button" class="btn btn-danger removeBtn">삭제</button>
+		</form>
+<script th:inline="javascript">
+	var actionForm = $("form");
+	var type = $("input[name='type']");
+	var keyword = $("input[name='keyword']");
+	actionForm.append(type);
+	actionForm.append(keyword);
+	
+	
+	$(".removeBtn").click(function(){
+		if(!confirm("삭제하시겠습니까?")){
+			return;
+		}		
+		actionForm.attr("action", "/board/remove")
+				  .attr("method", "post");
+		actionForm.submit();
+	});
+	
+	$(".modifyBtn").click(function(){
+		if(!confirm("수정하시겠습니까?")){
+			
+			return;
+		}
+		
+		actionForm.attr("action","/board/modify")
+			      .attr("method", "post");
+		  
+		actionForm.submit();
+	});
+/* 	$(".listBtn").click(function(){
+		var pageInfo = $("input[name='page']");
+		
+		actionForm.empty();
+		actionForm.append(pageInfo);
+		actionForm.attr("action", "/board/list")
+				  .attr("method", "get");
+		actionForm.submit();
+	}); */
+</script>
+		
+	</th:block>
+</th:block>
